@@ -1,0 +1,23 @@
+{
+  "name": "authenticat",
+  "version": "0.1.0",
+  "description": "a mean stack token based authentication system",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/authenticat/authenticat.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/authenticat/authenticat/issues"
+  },
+  "homepage": "https://github.com/authenticat/authenticat#readme",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4"
+  }
+}
