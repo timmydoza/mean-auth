@@ -29,6 +29,7 @@
     "body-parser": "^1.14.1",
     "jsonwebtoken": "^5.4.1",
     "mongodb": "^2.0.52",
-    "restful-router": "^0.1.1"
+    "q": "^1.4.1",
+    "urlrouter": "^0.5.4"
   }
 }
