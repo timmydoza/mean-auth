@@ -11,7 +11,6 @@ describe('the user object with a mongodb url', function() {
   describe('needs a user', function() {
     before(function(done) {
       userObj.users.insert({username: 'testuser'}, function(err, data) {
-        debugger;
         done();
       });
     });
