@@ -1,4 +1,3 @@
 node_modules
 **/*.sw?
-server.js
 db
