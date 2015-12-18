@@ -9,7 +9,7 @@ require(__dirname + '/server/server.js');
 describe('authentication routes - sign up', function() {
 
   afterEach('drop the database', function() {
-    //insert code to drop the database
+    db.users.dropdatabase();
   });
 
   it('should be able to create a user', function(done) {
@@ -19,25 +19,6 @@ describe('authentication routes - sign up', function() {
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(res.body.token).to.have.length.above(0);
-        done();
-      });
-  });
-
-  before('create test user that will cause a "user already exists" error', function(done) {
-    chai.request('localhost:3000/api')
-      .post('/signup')
-      .send({username: 'testuser', password: '123'})
-      .end();
-      done();
-  });
-
-  it('it should throw an error because user already exists', function(done) {
-    chai.request('localhost:3000/api')
-      .post('/signup')
-      .send({username: 'testuser', password: '123'})
-      .end(function(err, res) {
-        expect(err).to.eql('User already exists');
-        //or whatever it is the error should equal
         done();
       });
   });
