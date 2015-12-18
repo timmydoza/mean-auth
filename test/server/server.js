@@ -1,6 +1,8 @@
 var app = require('express')();
+var mongoose = require('mongoose');
 var Authenticat = require(__dirname + '/../../index');
-var authenticat = new Authenticat('mongodb://localhost/whatever');
+var connection = mongoose.conncect('mongodb://localhost/whatever');
+var authenticat = new Authenticat(connection);
 
 app.use('/api', authenticat.router);
 
