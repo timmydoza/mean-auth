@@ -1,5 +1,5 @@
 
-var httpBasic = require(__dirname + '/../lib/middleware/httpBasic');
+var httpBasic = require(__dirname + '/../lib/middleware/http_basic');
 var expect = require('chai').expect;
 
 describe('the httpBasic middleware', function() {
