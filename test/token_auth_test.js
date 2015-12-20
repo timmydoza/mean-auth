@@ -27,7 +27,7 @@ describe('the jwt middleware', function() {
         }
       };
       tokenAuth(req, null, function() {
-        expect(req.user).to.eql('testuser');
+        expect(req.user.username).to.eql('testuser');
         done();
       });
     });
