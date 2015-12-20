@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var connection = mongoose.connect('mongodb://localhost/test_db');
+var connection = mongoose.createConnection('mongodb://localhost/test_db');
 var expect = require('chai').expect;
 var User = require(__dirname + '/../lib/users');
 var userObj = new User(connection);
@@ -19,7 +19,7 @@ describe('the user object with a mongoose connection object', function() {
     describe('the userExists method', function() {
       it('should be able to check if a user is in the database', function(done) {
         userObj.userExists('testuser', function(err, data) {
-          expect(data).to.eql(true);
+          expect(data.username).to.eql('testuser');
           expect(err).to.eql(null);
           done();
         });

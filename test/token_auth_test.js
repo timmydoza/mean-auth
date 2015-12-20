@@ -1,6 +1,8 @@
 var expect = require('chai').expect;
+var mongoose = require('mongoose');
+var connection = mongoose.createConnection('mongodb://localhost/test_db');
 var Users = require(__dirname + '/../lib/users');
-var users = new Users('mongodb://localhost/test_db');
+var users = new Users(connection);
 var tokenAuth = require(__dirname + '/../lib/token_auth')(users);
 var jwt = require('jsonwebtoken');
 process.env.APP_SECRET = 'testsecret';
