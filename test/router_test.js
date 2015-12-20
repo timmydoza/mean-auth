@@ -41,7 +41,6 @@ describe('the authenticat router', function() {
           .post('/signup')
           .send({username: 'testuser123', password: 'password123'})
           .end(function(err, res) {
-            console.log(res);
             expect(err).to.eql(null);
             expect(res).to.have.status(401);
             expect(res.text).to.eql('server error');
