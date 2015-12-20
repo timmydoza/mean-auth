@@ -2,7 +2,7 @@ var app = require('express')();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var customRoles = ['admin', 'regularUser']; // this is who is authorized to proceed on a path with roleAuth middleware
+var customRoles = ['admin', 'unicorn']; // this is who is authorized to proceed on a path with roleAuth middleware
 
 // server dev will write this function to obtain the user's role. Then the  array of authorized roles and the user's role obtained by this function must be passed into someFunc as the last line of the function
 var getUserRole = function(req, res, checkAuthStatus){
