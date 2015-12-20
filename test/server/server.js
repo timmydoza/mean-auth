@@ -2,15 +2,14 @@ var app = require('express')();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
+var customRoles = ['admin', 'regularUser']; // this is who is authorized to proceed on a path with roleAuth middleware
 
-var roleAuth= require(__dirname + '/../../lib/auth_roles');
-var roles = ['admin', 'regularUser']; // this is who is authorized to proceed on a path with roleChecker middleware
-var cb = function(req, res, someFunc){  // the auth_roles file forces this someFunc to be my "magicFunction"
-  var role;
-  role = 'regularUser'; // this is supplied by the user, and prob shoudl come from token or be stored on user resource
-  someFunc(roles, role); // pass roles and role into magicFunction
+// server dev will write this function to obtain the user's role. Then the  array of authorized roles and the user's role obtained by this function must be passed into someFunc as the last line of the function
+var getUserRole = function(req, res, checkAuthStatus){
+  var userRole;
+  userRole = req.body.role || 'regularUser'; // this is supplied by the user, and prob should be stored on user resource
+  checkAuthStatus(customRoles, userRole);
 };
-
 
 var connection = mongoose.createConnection('mongodb://localhost/whatever');
 var Authenticat = require(__dirname + '/../../index');
@@ -19,7 +18,7 @@ var authenticat = new Authenticat(connection);
 
 app.use('/api', authenticat.router);
 
-app.get('/secret', bodyParser.json(), authenticat.tokenAuth, roleAuth(roles, cb), function(req, res) {
+app.get('/secret', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth(customRoles, getUserRole), function(req, res) {
   res.send('success!  Hello ' + req.user);
 });
 
