@@ -14,7 +14,26 @@ describe('the auth roles middleware', function() {
   });
   describe('needs a user', function() {
     before(function(done) {
-      users.users.insert([{username: 'testuser123', password: 'password123', admin: true}, {username: 'testuser456', password: 'password456', admin: false}, {username: 'testuser789', password: 'password789'}], function(err, data) {
+      users.users.insert([{
+        username: 'adminTrueUser',
+        password: 'password123',
+        admin: true
+      }, {
+        username: 'adminFalseUser',
+        password: 'password456',
+        admin: false
+      }, {
+        username: 'regularUser',
+        password: 'password789'
+      }, {
+        username: 'testRoleUser',
+        password: 'password321',
+        roles: ['testrole']
+      }, {
+        username: 'otherRoleUser',
+        password: 'password654',
+        roles: ['other']
+      }], function(err, data) {
         done();
       });
     });
@@ -22,7 +41,7 @@ describe('the auth roles middleware', function() {
       it('should call next() only if user is an admin', function(done) {
         var req = {
           user: {
-            username: "testuser123"
+            username: 'adminTrueUser'
           }
         };
         rolesAuth()(req, null, function() {
@@ -32,7 +51,7 @@ describe('the auth roles middleware', function() {
       it('should error if admin is false', function(done) {
         var req = {
           user: {
-            username: "testuser123"
+            username: 'adminFalseUser'
           }
         };
         var res = {
@@ -41,8 +60,58 @@ describe('the auth roles middleware', function() {
             done();
           }
         };
+        rolesAuth()(req, res);
       });
-      it('should error if admin property is not present');
+      it('should error if admin property is not present', function(done) {
+        var req = {
+          user: {
+            username: 'regularUser'
+          }
+        };
+        var res = {
+          json: function(message) {
+            expect(message.msg).to.eql('not authorized');
+            done();
+          }
+        };
+        rolesAuth()(req, res);
+      });
+    });
+    describe('admin and roles', function() {
+      it('should call next() if user is an admin', function(done) {
+        var req = {
+          user: {
+            username: 'adminTrueUser'
+          }
+        };
+        rolesAuth(['testrole'])(req, null, function() {
+          done();
+        });
+      });
+      it('should call next() if user has role of "testrole"', function(done) {
+        var req = {
+          user: {
+            username: 'testRoleUser'
+          }
+        };
+        rolesAuth(['testrole'])(req, null, function() {
+          done();
+        });
+      });
+      it('should error if not admin or "testrole"', function(done) {
+        var req = {
+          user: {
+            username: 'otherRoleUser'
+          }
+        };
+        var res = {
+          json: function(message) {
+            expect(message.msg).to.eql('not authorized');
+            done();
+          }
+        };
+        rolesAuth(['testrole'])(req, res);
+      });
     });
 
 
@@ -53,4 +122,3 @@ describe('the auth roles middleware', function() {
   });
 
 });
-
