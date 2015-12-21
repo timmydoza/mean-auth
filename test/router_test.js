@@ -7,6 +7,8 @@ var Users = require(__dirname + '/../lib/users');
 var users = new Users(connection);
 var router = require(__dirname + '/../lib/router')(users);
 var app = require('express')();
+var jwt = require('jsonwebtoken');
+process.env.APP_SECRET = 'testsecret';
 app.use('/', router);
 
 chai.use(chaiHttp);
@@ -21,13 +23,17 @@ describe('the authenticat router', function() {
   describe('needs a user', function() {
     before(function(done) {
       users.addUser('testuser123', 'password123', function(err, data) {
-        users.users.insert({
+        users.users.insert([{
           username: 'adminUser',
           password: 'password123',
           admin: true
-        }, function(err, data) {
+        }, {
+          username: 'rolesUser',
+          password: 'doesntmatter',
+          roles: ['removeme', 'anotherrole']
+        }], function(err, data) {
           done();
-      });
+        });
       });
 
     });
@@ -114,8 +120,71 @@ describe('the authenticat router', function() {
           });
       });
       describe('the roles route', function() {
-        it('should only be accessible by admins', function(done) {
-          done();
+        it('should not be accessible by non admins', function(done) {
+          var testToken = jwt.sign({username: 'testuser123'}, process.env.APP_SECRET);
+          chai.request(app)
+            .put('/roles')
+            .set('token', testToken)
+            .send({username: 'testuser123', add: 'something'})
+            .end(function(err, res) {
+              expect(err).to.eql(null);
+              expect(res.body.msg).to.eql('not authorized');
+              done();
+            });
+        });
+        it('should be accessible by admins and should add role if it doesnt already exist', function(done) {
+          var testToken = jwt.sign({username: 'adminUser'}, process.env.APP_SECRET);
+          chai.request(app)
+            .put('/roles')
+            .set('token', testToken)
+            .send({username: 'testuser123', add: 'something'})
+            .end(function(err, res) {
+              expect(err).to.eql(null);
+              expect(res.body.msg).to.eql('added role of something to testuser123');
+              users.users.findOne({username: 'testuser123'}, function(err, data) {
+                expect(data.roles).to.eql(['something']);
+                done();
+              });
+            });
+        });
+        it('should be accessible by admins and should remove role that exists', function(done) {
+          var testToken = jwt.sign({username: 'adminUser'}, process.env.APP_SECRET);
+          chai.request(app)
+            .put('/roles')
+            .set('token', testToken)
+            .send({username: 'rolesUser', remove: 'removeme'})
+            .end(function(err, res) {
+              expect(err).to.eql(null);
+              expect(res.body.msg).to.eql('removed role of removeme from rolesUser');
+              users.users.findOne({username: 'rolesUser'}, function(err, data) {
+                expect(data.roles).to.eql(['anotherrole']);
+                done();
+              });
+            });
+        });
+        it('should be accessible by admins and error if role already exists on add', function(done) {
+          var testToken = jwt.sign({username: 'adminUser'}, process.env.APP_SECRET);
+          chai.request(app)
+            .put('/roles')
+            .set('token', testToken)
+            .send({username: 'rolesUser', add: 'anotherrole'})
+            .end(function(err, res) {
+              expect(err).to.eql(null);
+              expect(res.body.msg).to.eql('rolesUser already had a role of anotherrole');
+              done();
+            });
+        });
+        it('should be accessible by admins and error if role does not exist on remove', function(done) {
+          var testToken = jwt.sign({username: 'adminUser'}, process.env.APP_SECRET);
+          chai.request(app)
+            .put('/roles')
+            .set('token', testToken)
+            .send({username: 'rolesUser', remove: 'nonexistantrole'})
+            .end(function(err, res) {
+              expect(err).to.eql(null);
+              expect(res.body.msg).to.eql('rolesUser did not have a role of nonexistantrole');
+              done();
+            });
         });
       });
     });
