@@ -1,11 +1,8 @@
 var mongoose = require('mongoose');
-var connection = mongoose.connect('mongodb://localhost/test_db');
+var connection = mongoose.createConnection('mongodb://localhost/test_db');
 var expect = require('chai').expect;
 var User = require(__dirname + '/../lib/users');
 var userObj = new User(connection);
-var tokenAuth = require(__dirname + '/../lib/token_auth')(userObj);
-var jwt = require('jsonwebtoken');
-process.env.APP_SECRET = 'testsecret';
 
 describe('the user object with a mongoose connection object', function() {
   after(function(done) {
@@ -22,7 +19,7 @@ describe('the user object with a mongoose connection object', function() {
     describe('the userExists method', function() {
       it('should be able to check if a user is in the database', function(done) {
         userObj.userExists('testuser', function(err, data) {
-          expect(data).to.eql(true);
+          expect(data.username).to.eql('testuser');
           expect(err).to.eql(null);
           done();
         });
@@ -47,6 +44,34 @@ describe('the user object with a mongoose connection object', function() {
           userObj.addUser('anothertestuser', 'password123', function(err, data) {
             expect(data).to.eql(null);
             expect(err).to.eql(null);
+            done();
+          });
+        });
+        it('should return an error if username is blank', function(done) {
+          userObj.addUser('', 'password123', function(err, data) {
+            expect(data).to.eql(null);
+            expect(err.message).to.eql('no username');
+            done();
+          });
+        });
+        it('should return an error if password is blank', function(done) {
+          userObj.addUser('testuser123', '', function(err, data) {
+            expect(data).to.eql(null);
+            expect(err.message).to.eql('no password');
+            done();
+          });
+        });
+        it('should return an error if username is undefined', function(done) {
+          userObj.addUser(undefined, 'password123', function(err, data) {
+            expect(data).to.eql(null);
+            expect(err.message).to.eql('no username');
+            done();
+          });
+        });
+        it('should return an error if password is undefined', function(done) {
+          userObj.addUser('testuser123', undefined, function(err, data) {
+            expect(data).to.eql(null);
+            expect(err.message).to.eql('no password');
             done();
           });
         });
@@ -81,87 +106,6 @@ describe('the user object with a mongoose connection object', function() {
           });
         });
       });
-    });
-  });
-});
-
-describe('the jwt middleware', function() {
-  after(function(done) {
-    userObj.db.dropDatabase(function() {
-      done();
-    });
-  });
-  describe('needs a user', function() {
-    before(function(done) {
-      userObj.users.insert({username: 'testuser'}, function(err, data) {
-        done();
-      });
-    });
-    it('should call next() if the token is correctly verified', function(done) {
-      var token = jwt.sign({username: 'testuser'}, process.env.APP_SECRET);
-      var req = {
-        headers: {
-          token: token
-        }
-      };
-      tokenAuth(req, null, function() {
-        expect(req.user).to.eql('testuser');
-        done();
-      });
-    });
-    it('should respond with an error message if there is no token', function(done) {
-      var req = {
-        headers: {}
-      };
-      var res = {
-        status: function(status) {
-          expect(status).to.eql(401);
-          return this;
-        },
-        json: function(message) {
-          expect(message).to.eql({msg: 'Invalid Authentication'});
-          done();
-        }
-      };
-      tokenAuth(req, res, null);
-    });
-    it('should respond with an error if the token is not valid', function(done) {
-      var token = jwt.sign({username: 'testuser'}, 'incorrectsecret');
-      var req = {
-        headers: {
-          token: token
-        }
-      };
-      var res = {
-        status: function(status) {
-          expect(status).to.eql(401);
-          return this;
-        },
-        json: function(message) {
-          expect(message).to.eql({msg: 'Invalid Authentication'});
-          done();
-        }
-      };
-      tokenAuth(req, res, null);
-    });
-    it('should respond with an error if the token is not valid', function(done) {
-      var token = jwt.sign({username: 'adifferenttestuser'}, process.env.APP_SECRET);
-      var req = {
-        headers: {
-          token: token
-        }
-      };
-      var res = {
-        status: function(status) {
-          expect(status).to.eql(401);
-          return this;
-        },
-        json: function(message) {
-          expect(message).to.eql({msg: 'Invalid Authentication'});
-          done();
-        }
-      };
-      tokenAuth(req, res, null);
     });
   });
 });
