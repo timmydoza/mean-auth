@@ -59,6 +59,10 @@ describe('the auth roles middleware', function() {
           }
         };
         var res = {
+          status: function(code) {
+            expect(code).to.eql(500);
+            return this;
+          },
           json: function(message) {
             expect(message.msg).to.eql('not authorized');
             done();
@@ -73,6 +77,10 @@ describe('the auth roles middleware', function() {
           }
         };
         var res = {
+          status: function(code) {
+            expect(code).to.eql(500);
+            return this;
+          },
           json: function(message) {
             expect(message.msg).to.eql('not authorized');
             done();
@@ -119,6 +127,10 @@ describe('the auth roles middleware', function() {
           }
         };
         var res = {
+          status: function(code) {
+            expect(code).to.eql(500);
+            return this;
+          },
           json: function(message) {
             expect(message.msg).to.eql('not authorized');
             done();
@@ -177,6 +189,10 @@ describe('the auth roles middleware', function() {
           }
         };
         var res = {
+          status: function(code) {
+            expect(code).to.eql(500);
+            return this;
+          },
           json: function(message) {
             expect(message.msg).to.eql('not authorized');
             done();

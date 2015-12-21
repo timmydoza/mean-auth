@@ -55,19 +55,8 @@ describe('the authenticat router', function() {
           .send({username: 'testuser123', password: 'password123'})
           .end(function(err, res) {
             expect(err).to.eql(null);
-            expect(res).to.have.status(401);
-            expect(res.text).to.eql('server error');
-            done();
-          });
-      });
-      it('should return a message if bad data is sent', function(done) {
-        chai.request(app)
-          .post('/signup')
-          .send({wrongproperty: 'bad data'})
-          .end(function(err, res) {
-            expect(err).to.eql(null);
-            expect(res).to.have.status(401);
-            expect(res.text).to.eql('server error');
+            expect(res).to.have.status(500);
+            expect(res.body.msg).to.eql('username already exists in database');
             done();
           });
       });
@@ -93,7 +82,7 @@ describe('the authenticat router', function() {
           .end(function(err, res) {
             expect(err).to.eql(null);
             expect(res).to.have.status(401);
-            expect(res.text).to.eql('bad login info');
+            expect(res.body.msg).to.eql('username or password is incorrect');
             done();
           });
       });
@@ -105,7 +94,7 @@ describe('the authenticat router', function() {
           .end(function(err, res) {
             expect(err).to.eql(null);
             expect(res).to.have.status(401);
-            expect(res.text).to.eql('bad login info');
+            expect(res.body.msg).to.eql('username or password is incorrect');
             done();
           });
       });
