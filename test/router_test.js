@@ -21,8 +21,15 @@ describe('the authenticat router', function() {
   describe('needs a user', function() {
     before(function(done) {
       users.addUser('testuser123', 'password123', function(err, data) {
-        done();
+        users.users.insert({
+          username: 'adminUser',
+          password: 'password123',
+          admin: true
+        }, function(err, data) {
+          done();
       });
+      });
+
     });
     describe('the signup route', function() {
       it('should return a token in response to a post request with username and password', function(done) {
@@ -105,6 +112,11 @@ describe('the authenticat router', function() {
             expect(res.text).to.eql('Authentication invalid!');
             done();
           });
+      });
+      describe('the roles route', function() {
+        it('should only be accessible by admins', function(done) {
+          done();
+        });
       });
     });
   });
