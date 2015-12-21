@@ -2,12 +2,12 @@ var app = require('express')();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var customRoles = ['admin', 'unicorn', 'butterfly'];
+var customRoles = ['admin', 'unicorn', 'butterfly', 'more booze'];
 
 var getUserRole = function(req, res, checkAuthStatus){
   var userRole;
   userRoles = req.user.roles;
-  checkAuthStatus(customRoles, userRoles);
+  checkAuthStatus(userRoles);
 };
 
 var connection = mongoose.createConnection('mongodb://localhost/whatever');
