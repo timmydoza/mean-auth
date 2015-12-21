@@ -68,7 +68,7 @@ Simply add this middleware text into a route to ensure a user has signed in to a
 
 Simply add this middleware **after** authenticat.tokenAuth. **There are three ways to use roleAuth.** This is determined by the number of arguments passed to authenticat.roleAuth().
 
-###1. Routes only accessible by admins.
+###1. Routes only accessible by admins
 If no arguments are passed to authenticat.roleAuth(), then the route will only accessible to admins.
 ```
 app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth(), function(req, res) {
@@ -76,7 +76,7 @@ app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleA
 });
 ```
 
-###2.Routes accessible to admins, and other specified roles.
+###2.Routes accessible to admins, and other specified roles
 The first argument passed to authenticat.roleAuth() is either a string specifying an acceptable role or an array strings that specify acceptable roles.  Users whose roles property does include at least one of these roles will not be allowed to access the route;
 
 ```
