@@ -10,7 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/authenticat/authenticat.git"
   },
-  "author": "",
+  "author": "Tyler Morgan <tyler@codefellows.com>",
+  "contributors": ["Craig Campbell <craigaaroncampbell@gmail.com>", "Ansoo Chang <asc2683@gmail.com>", "Spencer Caldwell <spencer.caldwell@gmail.com>", "Tim Mendoza <timmydoza@gmail.com>" ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/authenticat/authenticat/issues"
