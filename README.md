@@ -24,7 +24,7 @@ var port = process.env.PORT || 3000;
 
 app.use('/api', authenticat.router);
 
-app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth, function(req, res) {
+app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth(), function(req, res) {
  // your callback stuff here
 });
 
@@ -48,16 +48,60 @@ Takes a PUT requst to change the roles of a given user.  **This route is only ac
     - remove: role to be removed (string)
   example:  ```'{"username": "someUser", "add": "someNewRole"}'```
 
-##Making someone an admin
-There is no route to make an admin. The only way to add admin status to a user is to log into the database directly and manually add ```admin: true``` to the user object.
+#Admin Status
+The only way to add admin status to a user is to log into the database directly and manually add ```admin: true``` to the user object. *There is no route to make someone admin.* By default, users do not have an admin property (neither true nor false).
+
+**To remove admin status from an admin:** log into the database directly and set ```admin: false``` for that user.
 
 
 #Using The Middleware
 ##authenticat.tokenAuth
+Simply add this middleware text into a route to ensure a user has signed in to acess that route. This requires bodyParser if the token is sent in the request body.
+
+```app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, function(req, res) {
+ // your callback stuff here
+});```
 
 
 ##authenticat.roleAuth
+*This middleware is optional* and allows only users with specific roles to acces the route. It *must* come after tokenAuth middleware.
 
+Simply add this middleware **after** authenticat.tokenAuth. **There are three ways to use roleAuth.** This is determined by the number of arguments passed to authenticat.roleAuth().
+
+###1. Routes only accessible by admins
+If no arguments are passed to authenticat.roleAuth(), then the route will only accessible to admins.
+```
+app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth(), function(req, res) {
+ // your callback stuff here
+});
+```
+
+###2.Routes accessible to admins, and other specified roles
+The first argument passed to authenticat.roleAuth() is either a string specifying an acceptable role or an array strings that specify acceptable roles.  Users whose roles property does include at least one of these roles will not be allowed to access the route;
+
+```
+app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth('someRole' | ['someRole', 'anotherRole']), function(req, res) {
+ // your callback stuff here
+});
+```
+###3.Custom role callback function
+The second argument to authenticat.roleAuth() is a custom callback function. It must take three parametrs:  req, res, and a function.
+
+```
+var customRoles = ['someRole', 'anotherRole'];
+
+var customCallback = function(req, res, checkAuthStatus){
+  var userRoles;
+  // custom method for determining userRoles and any other tasks you want to accomplish here.
+  checkAuthStatus(userRoles);
+};
+```
+Then your route might look like this:
+```
+app.get('/someRoute', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth(customRoles, customCallback), function(req, res) {
+  // your callback stuff here
+});
+```
 
 #ToDos
 - add to docs: more info for building a client.

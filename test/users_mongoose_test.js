@@ -50,28 +50,28 @@ describe('the user object with a mongoose connection object', function() {
         it('should return an error if username is blank', function(done) {
           userObj.addUser('', 'password123', function(err, data) {
             expect(data).to.eql(null);
-            expect(err.message).to.eql('no username');
+            expect(err).to.eql('no username');
             done();
           });
         });
         it('should return an error if password is blank', function(done) {
           userObj.addUser('testuser123', '', function(err, data) {
             expect(data).to.eql(null);
-            expect(err.message).to.eql('no password');
+            expect(err).to.eql('no password');
             done();
           });
         });
         it('should return an error if username is undefined', function(done) {
           userObj.addUser(undefined, 'password123', function(err, data) {
             expect(data).to.eql(null);
-            expect(err.message).to.eql('no username');
+            expect(err).to.eql('no username');
             done();
           });
         });
         it('should return an error if password is undefined', function(done) {
           userObj.addUser('testuser123', undefined, function(err, data) {
             expect(data).to.eql(null);
-            expect(err.message).to.eql('no password');
+            expect(err).to.eql('no password');
             done();
           });
         });
