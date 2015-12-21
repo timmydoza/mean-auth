@@ -181,7 +181,7 @@ describe('the auth roles middleware', function() {
             expect(message.msg).to.eql('not authorized');
             done();
           }
-        }
+        };
         var testFunction = function(req, res, callback) {
           callback(['differentrole']);
         };
