@@ -6,8 +6,8 @@ var customRoles = ['admin', 'unicorn', 'butterfly'];
 
 var getUserRole = function(req, res, checkAuthStatus){
   var userRole;
-  userRole = req.user.roles[0];
-  checkAuthStatus(customRoles, userRole);
+  userRoles = req.user.roles;
+  checkAuthStatus(customRoles, userRoles);
 };
 
 var connection = mongoose.createConnection('mongodb://localhost/whatever');
