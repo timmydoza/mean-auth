@@ -4,8 +4,8 @@ var mongoose = require('mongoose');
 
 var customRoles = ['admin', 'unicorn', 'butterfly', 'more booze'];
 
-var getUserRole = function(req, res, checkAuthStatus){
-  var userRole;
+var getUserRoles = function(req, res, checkAuthStatus){
+  var userRoles;
   userRoles = req.user.roles;
   checkAuthStatus(userRoles);
 };
@@ -16,7 +16,7 @@ var authenticat = new Authenticat(connection);
 
 app.use('/api', authenticat.router);
 
-app.get('/secret', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth(customRoles, getUserRole), function(req, res) {
+app.get('/secret', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth(customRoles, getUserRoles), function(req, res) {
   res.send('success!  Hello ' + req.user.username);
 });
 
