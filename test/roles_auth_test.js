@@ -92,13 +92,23 @@ describe('the auth roles middleware', function() {
           done();
         });
       });
-      it('should call next() if user has role of "testrole"', function(done) {
+      it('should call next() if user has role in array of roles', function(done) {
         var req = {
           user: {
             username: 'testRoleUser'
           }
         };
         rolesAuth(['testrole'])(req, null, function() {
+          done();
+        });
+      });
+      it('should call next() if user has role in string', function(done) {
+        var req = {
+          user: {
+            username: 'testRoleUser'
+          }
+        };
+        rolesAuth('testrole')(req, null, function() {
           done();
         });
       });
@@ -118,14 +128,28 @@ describe('the auth roles middleware', function() {
       });
     });
     describe('custom admin', function() {
-      it('should call next() if user role is in provided array', function(done) {
+      it('should call next() if user role from callback is array', function(done) {
         var req = {
           user: {
             username: 'adminFalseUser'
           }
         };
-        var testFunction = function (req, res, callback) {
+        var testFunction = function(req, res, callback) {
           callback(['customrole']);
+        };
+        var middleware =  rolesAuth(['customrole'], testFunction);
+        middleware(req, null, function() {
+          done();
+        });
+      });
+      it('should call next() if user role from callback is string', function(done) {
+        var req = {
+          user: {
+            username: 'adminFalseUser'
+          }
+        };
+        var testFunction = function(req, res, callback) {
+          callback('customrole');
         };
         var middleware =  rolesAuth(['customrole'], testFunction);
         middleware(req, null, function() {
