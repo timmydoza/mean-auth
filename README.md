@@ -1,7 +1,7 @@
 Authenticat!
 =====================
 All praise to the authenticat, keeper of secrets!
-[![Build Status](https://travis-ci.org/craigaaroncampbell/authenticat.svg?branch=master)](https://travis-ci.org/craigaaroncampbell/authenticat)
+[![Build Status](https://travis-ci.org/craigaaroncampbell/authenticat.svg?branch=master)](https://travis-ci.org/authenticat/authenticat)
 
 ![Authenticat](http://i.giphy.com/3oEduQAsYcJKQH2XsI.gif)
 
@@ -35,10 +35,33 @@ app.listen(port, function() {
 
 #Using the Router
 ##/signup
-Takes a POST request to /signup.  This validates that the username is unique, creates a new user, and returns a token.
+Takes a POST request to /signup.  This validates that the username is unique, creates a new user, and returns a token. Example (using superagent-cli and the server above):
+```
+superagent localhost:3000/api/signup post '{"username":"someUser", "password":"somePassword"}'
+```
+
+###user objects
+users stored in the database have these characteristics:
+
+```
+{
+  username: username (string),
+  password: hashOfPassword (string),
+  roles: []   (array of strings - empty by default),
+  admin : (boolean - but by default there is no admin property)
+
+}
+
+The users are stored in the "users" collection.  For example, to find all the users on the command line using mongo:
+```
+db.users.find()
+```
 
 ##/signin
- Takes a GET request to /signin. Uses http Basic authentication for sign-in. The password is hashed using bcrypt and checked against the hash stored in the database. If username is in the database (already signed up) and the password hash matches, then a token is returned.
+ Takes a GET request to /signin. Uses http Basic authentication for sign-in. The password is hashed using bcrypt and checked against the hash stored in the database. If username is in the database (already signed up) and the password hash matches, then a token is returned. Example (using superagent-cli and the server above):
+ ```
+superagent localhost:3000/api/signin -u someUser:somePassword
+ ```
 
 ##/roles
 Takes a PUT requst to change the roles of a given user.  **This route is only accessible by an admin.**  In the reqest body, send:
@@ -46,12 +69,26 @@ Takes a PUT requst to change the roles of a given user.  **This route is only ac
   - *one* of the following:
     - add: role to be added  (string)
     - remove: role to be removed (string)
-  example:  ```'{"username": "someUser", "add": "someNewRole"}'```
+  example (using superagent-cli and the server above):
+
+```superagent localhost:3000/api/roles put '{"token":"theTokenForTheAdminMakingThisChange", username": "someUser", "add": "someNewRole"}'```
+
+or
+
+```superagent localhost:3000/api/roles put '{"token":"theTokenForTheAdminMakingThisChange", username": "someUser", "remove": "someRoleToRemove"}'```
+f
+It is **not recommended** that you use mongo db directly to modify roles as our built-in method adds/removes one role rather than replacing the  user's entire roles array.
+
 
 #Admin Status
 The only way to add admin status to a user is to log into the database directly and manually add ```admin: true``` to the user object. *There is no route to make someone admin.* By default, users do not have an admin property (neither true nor false).
 
 **To remove admin status from an admin:** log into the database directly and set ```admin: false``` for that user.
+
+example:
+```
+db.users.update({usrname: someUser}, { $set: {admin: true}})
+```
 
 
 #Using The Middleware
@@ -93,7 +130,7 @@ var customRoles = ['someRole', 'anotherRole'];
 var customCallback = function(req, res, checkAuthStatus){
   var userRoles;
   // custom method for determining userRoles and any other tasks you want to accomplish here.
-  checkAuthStatus(userRoles);
+  checkAuthStatus(userRoles);  // this function must **only** accept the user's roles array
 };
 ```
 Then your route might look like this:
@@ -105,7 +142,6 @@ app.get('/someRoute', bodyParser.json(), authenticat.tokenAuth, authenticat.role
 
 #ToDos
 - add to docs: more info for building a client.
-    - what json post request payload looks like
     - token should be sent on GET requests in req.headers
     - describe json error messges
 
