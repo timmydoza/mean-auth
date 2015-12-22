@@ -46,6 +46,7 @@ Response:
 ```{ token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRpbTEyMzQiLCJpYXQiOjE0NTA3NTk0NzN9.dvngcEuvntDp2t3fxGOlTZnAHxCCg_5CMxq-NaLnsFc' }```
 
 
+
 ## /signin
 Method: **GET**
 
