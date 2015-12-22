@@ -6,7 +6,7 @@ All praise to the authenticat, keeper of secrets!
 ![Authenticat](http://i.giphy.com/3oEduQAsYcJKQH2XsI.gif)
 
 # About
-Authenticat is a simple drop-in library for adding token-based authentication and role-based authorization to a MEAN stack. It provides automated sign-in and sign-up routes through a router that can be mounted on your server.  
+Authenticat is a simple drop-in library for adding token-based authentication and role-based authorization to a MEAN stack. It provides automated sign-in and sign-up routes through a router that can be mounted on your server.
 
 # Setup
 ```npm install authenticat```
@@ -35,7 +35,7 @@ app.listen(3000, function() {
 ## /signup
 Method: **POST**
 
-The signup route can be used to create a new user in the database.  The password will be saved to the database as a hash.  The route accepts a username and password as JSON and returns a token using [JWT](https://jwt.io/).  
+The signup route can be used to create a new user in the database.  The password will be saved to the database as a hash.  The route accepts a username and password as JSON and returns a token using [JWT](https://jwt.io/).
 
 Example (using superagent-cli and the server above):
 ```
