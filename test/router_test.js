@@ -159,7 +159,7 @@ describe('the authenticat router', function() {
             .send({username: 'rolesUser', add: 'anotherrole'})
             .end(function(err, res) {
               expect(err).to.eql(null);
-              expect(res.body.msg).to.eql('rolesUser already had a role of anotherrole');
+              expect(res.body.msg).to.eql('the user already has that role');
               done();
             });
         });
@@ -171,7 +171,19 @@ describe('the authenticat router', function() {
             .send({username: 'rolesUser', remove: 'nonexistantrole'})
             .end(function(err, res) {
               expect(err).to.eql(null);
-              expect(res.body.msg).to.eql('rolesUser did not have a role of nonexistantrole');
+              expect(res.body.msg).to.eql('the user does not have that role');
+              done();
+            });
+        });
+        it('should return an error if admin does not provide add or remove property', function(done) {
+          var testToken = jwt.sign({username: 'adminUser'}, process.env.APP_SECRET);
+          chai.request(app)
+            .put('/roles')
+            .set('token', testToken)
+            .send({username: 'rolesUser', remove: ''})
+            .end(function(err, res) {
+              expect(err).to.eql(null);
+              expect(res.body.msg).to.eql('PUT request must contain "add" or "remove" property');
               done();
             });
         });
