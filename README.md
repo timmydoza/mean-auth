@@ -6,7 +6,7 @@ All praise to the authenticat, keeper of secrets!
 ![Authenticat](http://i.giphy.com/3oEduQAsYcJKQH2XsI.gif)
 
 #About
-Authenticat is a simple drop-in library for creating token-based authenticaiton. It provides automated sign-in and sign-up routes on a router that can be mounted on your server.  It assumes you are using an Express server and Mongo.
+Authenticat is a simple drop-in library for creating token-based authenticaiton. It provides automated sign-in and sign-up routes on a router that can be mounted on your server. It also provides a route for an admin to change authorization roles for authorization purposes.  It assumes you are using an Express server and Mongo.
 
 #Setup
 ```npm install authenticat```
@@ -48,7 +48,7 @@ users stored in the database have these characteristics:
   username: username (string),
   password: hashOfPassword (string),
   roles: []   (array of strings - empty by default),
-  admin : (boolean - but by default there is no admin property)
+  admin : (boolean - but this must be set after creating the user as there is default admin property)
 
 }
 ```
@@ -70,7 +70,8 @@ Takes a PUT requst to change the roles of a given user.  **This route is only ac
   - *one* of the following:
     - add: role to be added  (string)
     - remove: role to be removed (string)
-  example (using superagent-cli and the server above):
+
+example (using superagent-cli and the server above):
 
 ```superagent localhost:3000/api/roles put '{"token":"adminUserToken", username": "someUser", "add": "someNewRole"}'
 ```
@@ -121,7 +122,15 @@ app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleA
 The first argument passed to authenticat.roleAuth() is either a string specifying an acceptable role or an array strings that specify acceptable roles.  Users whose roles property does include at least one of these roles will not be allowed to access the route;
 
 ```
-app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth('someRole' | ['someRole', 'anotherRole']), function(req, res) {
+app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth('someRole'), function(req, res) {
+ // your callback stuff here
+});
+```
+
+or
+
+```
+app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleAuth( ['someRole', 'anotherRole']), function(req, res) {
  // your callback stuff here
 });
 ```
@@ -145,9 +154,5 @@ app.get('/someRoute', bodyParser.json(), authenticat.tokenAuth, authenticat.role
 ```
 
 #ToDos
-- add to docs: more info for building a client.
-    - token should be sent on GET requests in req.headers
-    - describe json error messges
-
 - password verification - password character set, length
 - options for token expiration - have a default but allow for custom time
