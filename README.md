@@ -51,6 +51,7 @@ users stored in the database have these characteristics:
   admin : (boolean - but by default there is no admin property)
 
 }
+```
 
 The users are stored in the "users" collection.  For example, to find all the users on the command line using mongo:
 ```
