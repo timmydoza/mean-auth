@@ -72,12 +72,15 @@ Takes a PUT requst to change the roles of a given user.  **This route is only ac
     - remove: role to be removed (string)
   example (using superagent-cli and the server above):
 
-```superagent localhost:3000/api/roles put '{"token":"theTokenForTheAdminMakingThisChange", username": "someUser", "add": "someNewRole"}'```
+```superagent localhost:3000/api/roles put '{"token":"adminUserToken", username": "someUser", "add": "someNewRole"}'
+```
 
 or
 
-```superagent localhost:3000/api/roles put '{"token":"theTokenForTheAdminMakingThisChange", username": "someUser", "remove": "someRoleToRemove"}'```
-f
+```
+superagent localhost:3000/api/roles put '{"token":"adminUserToken", username": "someUser", "remove": "someRoleToRemove"}'
+```
+
 It is **not recommended** that you use mongo db directly to modify roles as our built-in method adds/removes one role rather than replacing the  user's entire roles array.
 
 
@@ -114,7 +117,7 @@ app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleA
 });
 ```
 
-###2.Routes accessible to admins, and other specified roles
+###2. Routes accessible to admins, and other specified roles
 The first argument passed to authenticat.roleAuth() is either a string specifying an acceptable role or an array strings that specify acceptable roles.  Users whose roles property does include at least one of these roles will not be allowed to access the route;
 
 ```
@@ -122,7 +125,7 @@ app.get('/somePath', bodyParser.json(), authenticat.tokenAuth, authenticat.roleA
  // your callback stuff here
 });
 ```
-###3.Custom role callback function
+###3. Custom role callback function
 The second argument to authenticat.roleAuth() is a custom callback function. It must take three parametrs:  req, res, and a function.
 
 ```
