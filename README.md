@@ -73,8 +73,10 @@ Takes a PUT requst to change the roles of a given user.  **This route is only ac
 
 example (using superagent-cli and the server above):
 
-```superagent localhost:3000/api/roles put '{"token":"adminUserToken", username": "someUser", "add": "someNewRole"}'
 ```
+superagent localhost:3000/api/roles put '{"token":"adminUserToken", username": "someUser", "add": "someNewRole"}
+```
+
 
 or
 
