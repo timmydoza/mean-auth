@@ -45,7 +45,7 @@ Response:
 
 ```{ token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRpbTEyMzQiLCJpYXQiOjE0NTA3NTk0NzN9.dvngcEuvntDp2t3fxGOlTZnAHxCCg_5CMxq-NaLnsFc' }```
 
-
+**If the user name is taken, the response object will contain a value set to true that can be used on the client side to notify the user that the name has been taken.**  ```res.data.nameTaken: true```
 
 ## /signin
 Method: **GET**
