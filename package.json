@@ -1,6 +1,6 @@
 {
   "name": "authenticat",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a mean stack token based authentication system",
   "main": "index.js",
   "scripts": {
