@@ -57,6 +57,7 @@ describe('the authenticat router', function() {
             expect(err).to.eql(null);
             expect(res).to.have.status(500);
             expect(res.body.msg).to.eql('username already exists in database');
+            expect(res.body.nameTaken).to.eql(true);
             done();
           });
       });
