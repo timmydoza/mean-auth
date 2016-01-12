@@ -102,7 +102,7 @@ app.get('/somePath', auth.tokenAuth, function(req, res) {
 ## auth.roleAuth()
 The roleAuth middleware allows admins and users with specific roles to access the route. It *must* come after the tokenAuth middleware.
 
-Simply add this middleware **after** authenticat.tokenAuth. **There are three ways to use roleAuth.** This is determined by the number of arguments passed to authenticat.roleAuth().
+Simply add this middleware **after** auth.tokenAuth. **There are three ways to use roleAuth.** This is determined by the number of arguments passed to auth.roleAuth().
 
 ### 1. Routes only accessible by admins
 If no arguments are passed to auth.roleAuth(), then the route will only accessible to admins.
