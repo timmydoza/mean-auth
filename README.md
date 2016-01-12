@@ -1,28 +1,25 @@
-Authenticat!
+mean-auth
 =====================
-All praise to the authenticat, keeper of secrets!
 [![Build Status](https://travis-ci.org/craigaaroncampbell/authenticat.svg?branch=master)](https://travis-ci.org/authenticat/authenticat)
 
-![Authenticat](http://i.giphy.com/3oEduQAsYcJKQH2XsI.gif)
-
 # About
-Authenticat is a simple drop-in library for adding token-based authentication and role-based authorization to a MEAN stack. It provides automated sign-in and sign-up routes through a router that can be mounted on your server.
+Mean-auth is a simple drop-in library for adding token-based authentication and role-based authorization to a MEAN stack. It provides automated sign-in and sign-up routes through a router that can be mounted on your server.
 
 # Setup
-```npm install authenticat```
+```npm install mean-auth```
 
 # Usage
 Simply drop the router into an Express server and provide it with a connection to a MongoDB database.
 ```
 var app = require('express')();
 var mongoose = require('mongoose');
-var connection = mongoose.conncect('mongodb://localhost/whatever');
-var Authenticat = require('authenticat');
-var authenticat = new Authenticat(connection);
+var connection = mongoose.conncect('mongodb://localhost/user_db');
+var MeanAuth = require('mean-auth');
+var auth = new MeanAuth(connection);
 
-app.use('/api', authenticat.router);
+app.use('/api', auth.router);
 
-app.get('/secretpath', authenticat.tokenAuth, function(req, res) {
+app.get('/secretpath', auth.tokenAuth, function(req, res) {
  // your code here
 });
 
@@ -87,44 +84,44 @@ The only way to add admin status to a user is to log into the database directly 
 
 Example (using MongoDB):
 ```
-db.users.update({usrname: 'someUser'}, { $set: {admin: true}})
+db.users.update({usrname: 'someUser'}, {$set: {admin: true}})
 ```
 
 
 # Using The Middleware
-## authenticat.tokenAuth
+## auth.tokenAuth
 Simply add this middleware into a route to ensure that only users with valid tokens may access the route. BodyParser is required if the token is sent in the request body.  It is recommended that the token should be sent with the response header.
 
 ```
-app.get('/somePath', authenticat.tokenAuth, function(req, res) {
+app.get('/somePath', auth.tokenAuth, function(req, res) {
  // your code here
 });
 ```
 
 
-## authenticat.roleAuth()
+## auth.roleAuth()
 The roleAuth middleware allows admins and users with specific roles to access the route. It *must* come after the tokenAuth middleware.
 
 Simply add this middleware **after** authenticat.tokenAuth. **There are three ways to use roleAuth.** This is determined by the number of arguments passed to authenticat.roleAuth().
 
 ### 1. Routes only accessible by admins
-If no arguments are passed to authenticat.roleAuth(), then the route will only accessible to admins.
+If no arguments are passed to auth.roleAuth(), then the route will only accessible to admins.
 ```
-app.get('/somePath', authenticat.tokenAuth, authenticat.roleAuth(), function(req, res) {
+app.get('/somePath', auth.tokenAuth, auth.roleAuth(), function(req, res) {
  // your code here
 });
 ```
 
 ### 2. Routes accessible to admins and other specified roles
-The first argument passed to authenticat.roleAuth() is either a string specifying a role or an array of strings which specify roles.  Users whose roles property includes at least one of the supplied roles will be allowed to access the route.
+The first argument passed to auth.roleAuth() is either a string specifying a role or an array of strings which specify roles.  Users whose roles property includes at least one of the supplied roles will be allowed to access the route.
 
 ```
-app.get('/somePath', authenticat.tokenAuth, authenticat.roleAuth('someRole'), function(req, res) {
+app.get('/somePath', auth.tokenAuth, auth.roleAuth('someRole'), function(req, res) {
  // your code
 });
 ```
 ### 3. Custom role callback function
-The second argument to authenticat.roleAuth() is a custom function. It must take three parameters:  req, res, and a function.
+The second argument to auth.roleAuth() is a custom function. It must take three parameters:  req, res, and a function.
 
 ```
 var customRoles = ['someRole', 'anotherRole'];
@@ -139,7 +136,7 @@ The roleAuth middleware will compare the roles specified as the first argument p
 
 Then your route might look like this:
 ```
-app.get('/someRoute', authenticat.tokenAuth, authenticat.roleAuth(customRoles, customCallback), function(req, res) {
+app.get('/someRoute', auth.tokenAuth, auth.roleAuth(customRoles, customCallback), function(req, res) {
   // your code here
 });
 ```
