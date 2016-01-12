@@ -1,6 +1,6 @@
 mean-auth
 =====================
-[![Build Status](https://travis-ci.org/craigaaroncampbell/authenticat.svg?branch=master)](https://travis-ci.org/authenticat/authenticat)
+[![Build Status](https://travis-ci.org/timmydoza/mean-auth.svg?branch=master)](https://travis-ci.org/timmydoza/mean-auth.svg?branch=master)
 
 # About
 Mean-auth is a simple drop-in library for adding token-based authentication and role-based authorization to a MEAN stack. It provides automated sign-in and sign-up routes through a router that can be mounted on your server.
